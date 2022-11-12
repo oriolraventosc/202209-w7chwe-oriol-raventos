@@ -1,22 +1,12 @@
 import enviroment from "../../../loadEnviroment.js";
 import type { Request, Response, NextFunction } from "express";
-import { createClient } from "@supabase/supabase-js";
 import debugCreator from "debug";
-import path from "path";
-import fs from "fs/promises";
 import chalk from "chalk";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import type { Credentials, UserTokenPayload, RegisterData } from "../types.js";
 import CustomError from "../../customError/customError.js";
 import { User } from "../../../database/models/user.js";
-
-const supabase = createClient(
-  enviroment.supabaseUrl,
-  enviroment.supabaseApiKey
-);
-
-const bucket = supabase.storage.from("friendenemies-images");
 
 const debug = debugCreator(`${enviroment.debug}controllers`);
 
@@ -25,17 +15,7 @@ export const userRegister = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { username, password, email } = req.body as RegisterData;
-
-  const itemFilesContent = await fs.readFile(
-    path.join("assets", "images", req.file.originalname)
-  );
-
-  await bucket.upload(req.file.originalname, itemFilesContent);
-
-  const {
-    data: { publicUrl },
-  } = bucket.getPublicUrl(req.file.originalname);
+  const { username, password, email, image } = req.body as RegisterData;
 
   try {
     if (!username || !password || !email) {
@@ -48,18 +28,13 @@ export const userRegister = async (
       return;
     }
 
-    await fs.rename(
-      path.join("assets", "images", req.file.filename),
-      path.join("assets", "images", req.file.originalname)
-    );
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const userToRegister = await User.create({
       username,
       password: hashedPassword,
       email,
-      image: req.file.originalname,
-      backUpImage: publicUrl,
+      image,
     });
 
     res.status(201).json({
