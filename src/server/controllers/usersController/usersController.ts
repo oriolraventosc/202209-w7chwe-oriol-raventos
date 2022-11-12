@@ -90,3 +90,23 @@ export const userLogin = async (
     next(error);
   }
 };
+
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const items = await User.find();
+    if (items.length === 0) {
+      const customError = new CustomError("No users", 400, "No users");
+      next(customError);
+      return;
+    }
+
+    res.status(200).json(items);
+    debug(chalk.greenBright(`Found ${items.length} users`));
+  } catch (error: unknown) {
+    next(error);
+  }
+};
