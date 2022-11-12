@@ -18,6 +18,9 @@ const userSchema = new Schema({
   picture: {
     type: String,
   },
+  backUpImage: {
+    type: String,
+  },
 });
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
