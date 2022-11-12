@@ -3,7 +3,7 @@ import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import mockUser from "../../../mocks/mockUser";
-import { userLogin, userRegister } from "./usersController";
+import { userLogin, userRegister, getUsers } from "./usersController";
 import CustomError from "../../customError/customError";
 import { User } from "../../../database/models/user";
 
@@ -118,6 +118,22 @@ describe("Given a userLogin controller", () => {
       await userLogin(req as Request, res as Response, next as NextFunction);
 
       expect(next).toHaveBeenCalledWith(customError);
+    });
+  });
+});
+
+describe("Given a getUsers controller", () => {
+  describe("When it receives a response with a empty body", () => {
+    test("Then it should respond with a list of users", async () => {
+      const status = 200;
+      const req: Partial<Request> = {
+        body: {},
+      };
+
+      User.find = jest.fn().mockReturnValue({});
+      await getUsers(req as Request, res as Response, next as NextFunction);
+
+      expect(res.status).toHaveBeenCalledWith(status);
     });
   });
 });
