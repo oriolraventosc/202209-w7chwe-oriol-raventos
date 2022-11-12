@@ -16,7 +16,7 @@ const supabase = createClient(
   enviroment.supabaseApiKey
 );
 
-const bucket = supabase.storage.from(enviroment.supabaseBucketImages);
+const bucket = supabase.storage.from("friendenemies-images");
 
 const debug = debugCreator(`${enviroment.debug}controllers`);
 
@@ -26,26 +26,18 @@ export const userRegister = async (
   next: NextFunction
 ) => {
   const { username, password, email } = req.body as RegisterData;
+
   const itemFilesContent = await fs.readFile(
     path.join("assets", "images", req.file.originalname)
   );
+
   await bucket.upload(req.file.originalname, itemFilesContent);
+
   const {
     data: { publicUrl },
   } = bucket.getPublicUrl(req.file.originalname);
-  const timeStamp = Date.now();
-
-  const newFilePath = path.join(
-    "assets",
-    "images",
-    req.file.originalname.split(".").join(`${timeStamp}.`)
-  );
 
   try {
-    await fs.rename(
-      path.join("assets", "images", req.file.filename),
-      newFilePath
-    );
     if (!username || !password || !email) {
       const customError = new CustomError(
         "Error registering",
@@ -56,17 +48,24 @@ export const userRegister = async (
       return;
     }
 
+    await fs.rename(
+      path.join("assets", "images", req.file.filename),
+      path.join("assets", "images", req.file.originalname)
+    );
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const userToRegister = User.create({
+    const userToRegister = await User.create({
       username,
       password: hashedPassword,
       email,
-      picture: req.file.filename,
+      image: req.file.originalname,
       backUpImage: publicUrl,
     });
 
-    res.status(201).json(userToRegister);
+    res.status(201).json({
+      userToRegister,
+    });
+
     debug(chalk.greenBright(`User ${username} registered!`));
   } catch (error: unknown) {
     next(error);
