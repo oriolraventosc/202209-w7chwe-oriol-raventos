@@ -62,7 +62,7 @@ export const userRegister = async (
       username,
       password: hashedPassword,
       email,
-      image: req.file.filename,
+      picture: req.file.filename,
       backUpImage: publicUrl,
     });
 
