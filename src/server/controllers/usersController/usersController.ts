@@ -35,7 +35,7 @@ export const userRegister = async (
       email,
     });
 
-    res.status(201).json({ userToRegister });
+    res.status(201).json(userToRegister);
     debug(chalk.greenBright(`User ${username} registered!`));
   } catch (error: unknown) {
     next(error);

@@ -90,34 +90,20 @@ describe("Given a userRegister controller", () => {
 
 describe("Given a userLogin controller", () => {
   describe("When it receives a response", () => {
-    test("Then it should call it's method with a status 200", async () => {
-      const status = 200;
+    test("Then it should call it's method with a status 200 and the token as the json", async () => {
+      const status = 201;
 
       const req: Partial<Request> = {
         body: mockUser,
       };
 
-      User.findOne = jest.fn().mockResolvedValue(mockUser);
+      User.findOne = jest.fn().mockReturnValue(mockUser.username);
       jwt.sign = jest.fn().mockReturnValueOnce(token);
       bcrypt.compare = jest.fn().mockReturnValueOnce(true);
 
       await userLogin(req as Request, res as Response, next as NextFunction);
 
       expect(res.status).toHaveBeenCalledWith(status);
-    });
-
-    test("Then it should call it's method json with the user token", async () => {
-      const req: Partial<Request> = {
-        body: mockUser,
-      };
-
-      User.findOne = jest.fn().mockResolvedValue(mockUser);
-      jwt.sign = jest.fn().mockReturnValueOnce(token);
-      bcrypt.compare = jest.fn().mockReturnValueOnce(true);
-
-      await userLogin(req as Request, res as Response, next as NextFunction);
-
-      expect(res.json).toHaveBeenCalledWith({ accessToken: token });
     });
   });
 
