@@ -19,3 +19,9 @@ export interface ItemStructure extends Request {
   name: string;
   image: string;
 }
+
+export interface RegisterData {
+  username: string;
+  password: string;
+  email: string;
+}
