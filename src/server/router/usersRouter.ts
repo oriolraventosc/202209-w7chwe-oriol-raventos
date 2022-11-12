@@ -15,6 +15,6 @@ const upload = multer({
 
 usersRouter.post("/login", userLogin);
 
-usersRouter.post("/register", upload.single("picture"), userRegister);
+usersRouter.post("/register", upload.single("image"), userRegister);
 
 export default usersRouter;
