@@ -16,3 +16,5 @@ jobs:
 
       - name: Testing
         run: npm test
+        env:
+          JWT_SECRET_KEY: ${{secrets.JWT_SECRET_KEY}}
