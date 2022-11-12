@@ -99,7 +99,7 @@ export const getUsers = async (
   try {
     const items = await User.find();
     if (items.length === 0) {
-      const customError = new CustomError("No items", 400, "No items");
+      const customError = new CustomError("No users", 400, "No users");
       next(customError);
       return;
     }
