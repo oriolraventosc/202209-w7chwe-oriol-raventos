@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use(morgan("dev"));
 
-app.use("users", cors(), usersRouter);
+app.use("/users", cors(), usersRouter);
 
 app.use(endpointUnknown);
 
