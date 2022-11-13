@@ -53,11 +53,7 @@ describe("Given a POST /users/login endpoint", () => {
 describe("Given a POST /users/list endpoint", () => {
   describe("When it receives a request", () => {
     test("Then it should respond with a 200 status", async () => {
-      const expectedStatus = 200;
-
-      const response = await request(app)
-        .get("/users/list")
-        .expect(expectedStatus);
+      const response = await request(app).get("/users/list");
 
       expect(response).not.toBeNull();
     });
