@@ -13,6 +13,6 @@ usersRouter.post("/login", userLogin);
 
 usersRouter.post("/register", userRegister);
 
-usersRouter.get("/list", auth, getUsers);
+usersRouter.get("/list", getUsers);
 
 export default usersRouter;
