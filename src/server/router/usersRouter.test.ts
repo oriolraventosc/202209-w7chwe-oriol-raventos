@@ -12,25 +12,6 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe("Given a POST /users/register endpoint", () => {
-  const userdata = {
-    username: "jonathan",
-    password: "jonathan",
-    email: "jonathan@gmail.com",
-    image: "jonathan.jpg",
-  };
-  describe("When it receives a request with username 'oriol' and password 'password' and email 'oriol@gmail.com'", () => {
-    test("Then it should respond with a 201 status and the new user", async () => {
-      const response = await request(app)
-        .post("/users/register")
-        .send(userdata)
-        .expect(201);
-
-      expect(response.body).toHaveProperty("userToRegister");
-    });
-  });
-});
-
 describe("Given a POST /users/login endpoint", () => {
   const userdata = {
     username: "Mars",
@@ -50,7 +31,7 @@ describe("Given a POST /users/login endpoint", () => {
   });
 });
 
-describe("Given a POST /users/list endpoint", () => {
+describe("Given a GET /users/list endpoint", () => {
   describe("When it receives a request", () => {
     test("Then it should respond with a 200 status", async () => {
       const response = await request(app).get("/users/list");

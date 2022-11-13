@@ -11,7 +11,8 @@
     "start:dev": "node --watch .",
     "test": "jest",
     "test:dev": "jest --watchAll",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:coverage": "jest --coverage "
   },
   "keywords": [],
   "author": "",
