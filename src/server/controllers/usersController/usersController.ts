@@ -81,11 +81,11 @@ export const userLogin = async (
       username,
     };
 
-    const token = jwt.sign(tokenPayload, enviroment.jwtSecretKey, {
+    const accessToken = jwt.sign(tokenPayload, enviroment.jwtSecretKey, {
       expiresIn: "3d",
     });
 
-    res.status(200).json({ accessToken: token });
+    res.status(200).json({ accessToken });
   } catch (error: unknown) {
     next(error);
   }
