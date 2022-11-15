@@ -15,8 +15,6 @@ const supabase = createClient(
   enviroment.supabaseUrl,
   enviroment.supabaseApiKey
 );
-
-const bucket = supabase.storage.from(enviroment.supabaseBucketImages);
 const debug = debugCreator(`${enviroment.debug}controllers`);
 
 export const userRegister = async (
@@ -25,27 +23,6 @@ export const userRegister = async (
   next: NextFunction
 ) => {
   const { username, password, email } = req.body as RegisterData;
-  const timeStamp = Date.now();
-
-  await fs.rename(
-    path.join("assets", "images", req.file.filename),
-    path.join(
-      "assets",
-      "images",
-      req.file.originalname.split(".").join(`${timeStamp}`)
-    )
-  );
-
-  const itemFilesContent = await fs.readFile(
-    path.join("assets", "images", req.file.originalname)
-  );
-
-  await bucket.upload(req.file.originalname, itemFilesContent);
-
-  const {
-    data: { publicUrl },
-  } = bucket.getPublicUrl(req.file.originalname);
-
   try {
     if (!username || !password || !email) {
       const customError = new CustomError(
@@ -58,22 +35,59 @@ export const userRegister = async (
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    if (req.file) {
+      const timeStamp = Date.now();
 
-    const userToRegister = await User.create({
-      username,
-      password: hashedPassword,
-      email,
-      image: req.file.originalname,
-      backUpImage: publicUrl,
-    });
+      const newFilePath = `${path.basename(
+        req.file.originalname,
+        path.extname(req.file.originalname)
+      )}-${timeStamp}${path.extname(req.file.originalname)}`;
 
-    res.status(201).json({
-      message: `User ${userToRegister.username} created!`,
-    });
+      await fs.rename(
+        path.join("assets", "images", req.file.filename),
+        path.join("assets", "images", newFilePath)
+      );
 
-    debug(chalk.greenBright(`User ${username} registered!`));
+      const bucket = supabase.storage.from(enviroment.supabaseBucketImages);
+      const itemFileContents = await fs.readFile(
+        path.join("assets", "images", newFilePath)
+      );
+
+      await bucket.upload(newFilePath, itemFileContents);
+      const {
+        data: { publicUrl },
+      } = bucket.getPublicUrl(newFilePath);
+      const newUser = await User.create({
+        username,
+        password: hashedPassword,
+        email,
+        image: newFilePath,
+        backUpImage: publicUrl,
+      });
+      res.status(201).json({
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+        image: newFilePath,
+        backUpImage: publicUrl,
+      });
+
+      debug(chalk.greenBright(`User ${username} registered!`));
+    } else {
+      const newUser = await User.create({
+        username,
+        password: hashedPassword,
+        email,
+      });
+      res.status(201).json({ user: { id: newUser._id, username, email } });
+    }
   } catch (error: unknown) {
-    next(error);
+    const customError = new CustomError(
+      (error as Error).message,
+      401,
+      "Error registering!"
+    );
+    next(customError);
   }
 };
 

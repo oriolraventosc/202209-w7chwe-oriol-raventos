@@ -97,20 +97,18 @@ describe("Given a GET /users/register endpoint", () => {
   describe("When it receives a request with username 'Josefa', password 'josefa' and email 'josefa@gmail.com'", () => {
     test("Then it should respond with a 201 status and register the user 'Josefa'", async () => {
       const userData = {
-        username: "Josefa",
-        password: "josefa",
-        email: "josefa@gmail.com",
-        image: "josefa.jpg",
+        username: "Jonathan565",
+        password: "Jonathan565",
+        email: "Jonathan565@gmail.com",
       };
       const expectedStatus = 201;
-      const expectedText = { message: `User ${userData.username} created!` };
 
       const response = await request(app)
         .post("/users/register")
         .send(userData)
         .expect(expectedStatus);
 
-      expect(response.body).toStrictEqual(expectedText);
+      expect(response.body).toHaveProperty("user");
     });
   });
 
@@ -120,9 +118,10 @@ describe("Given a GET /users/register endpoint", () => {
         username: "",
         password: "josefa",
         email: "josefa@gmail.com",
+        image: "josefa.webp",
       };
-      const expectedText = { error: "Opps...General Error" };
-      const expectedStatus = 500;
+      const expectedText = { error: "Missing credentials!" };
+      const expectedStatus = 401;
 
       const response = await request(app)
         .post("/users/register")
@@ -140,8 +139,8 @@ describe("Given a GET /users/register endpoint", () => {
         password: "",
         email: "josefa@gmail.com",
       };
-      const expectedText = { error: "Opps...General Error" };
-      const expectedStatus = 500;
+      const expectedText = { error: "Missing credentials!" };
+      const expectedStatus = 401;
 
       const response = await request(app)
         .post("/users/register")
@@ -159,8 +158,8 @@ describe("Given a GET /users/register endpoint", () => {
         password: "josefa",
         email: "",
       };
-      const expectedText = { error: "Opps...General Error" };
-      const expectedStatus = 500;
+      const expectedText = { error: "Missing credentials!" };
+      const expectedStatus = 401;
 
       const response = await request(app)
         .post("/users/register")
