@@ -11,11 +11,11 @@ import type { Credentials, UserTokenPayload, RegisterData } from "../types.js";
 import CustomError from "../../customError/customError.js";
 import { User } from "../../../database/models/user.js";
 
-const debug = debugCreator(`${enviroment.debug}controllers`);
 const supabase = createClient(
   enviroment.supabaseUrl,
   enviroment.supabaseApiKey
 );
+const debug = debugCreator(`${enviroment.debug}controllers`);
 
 export const userRegister = async (
   req: Request,
@@ -48,7 +48,7 @@ export const userRegister = async (
         path.join("assets", "images", newFilePath)
       );
 
-      const bucket = supabase.storage.from(enviroment.supabaseApiKey);
+      const bucket = supabase.storage.from(enviroment.supabaseBucketImages);
       const itemFileContents = await fs.readFile(
         path.join("assets", "images", newFilePath)
       );
@@ -61,14 +61,15 @@ export const userRegister = async (
         username,
         password: hashedPassword,
         email,
-        picture: newFilePath,
-        backupPicure: publicUrl,
+        image: newFilePath,
+        backUpImage: publicUrl,
       });
       res.status(201).json({
         id: newUser._id,
         username: newUser.username,
         email: newUser.email,
-        picture: newFilePath,
+        image: newFilePath,
+        backUpImage: publicUrl,
       });
 
       debug(chalk.greenBright(`User ${username} registered!`));
