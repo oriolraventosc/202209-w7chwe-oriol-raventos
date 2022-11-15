@@ -26,7 +26,7 @@ describe("Given a POST /users/login endpoint", () => {
         .send(userdata)
         .expect(expectedStatus);
 
-      expect(response.body).toHaveProperty("accessToken");
+      expect(response).toHaveProperty("text");
     });
   });
 });
