@@ -17,19 +17,25 @@ const tokenPayload = {};
 const token = jwt.sign(tokenPayload, enviroment.jwtSecretKey);
 
 const next = jest.fn();
+const req: Partial<Request> = {
+  body: mockUser,
+};
 
+const imageUrl = `http://localhost/images/08fbcbb6ecbb70bb900d8fc35a184c74.png`;
 describe("Given a userRegister controller", () => {
   describe("When it receives a response with paco's credentials", () => {
     test("Then it should call it's method with a status 201", async () => {
       const expectedStatus = 201;
 
-      const req: Partial<Request> = {
-        body: mockUser,
-      };
-      User.create = jest.fn().mockResolvedValue(mockUser);
+      const hashedPassword = await bcrypt.hash(mockUser.password, 10);
+      User.create = jest.fn().mockResolvedValue({
+        ...mockUser,
+        password: hashedPassword,
+      });
       await userRegister(req as Request, res as Response, null);
 
       expect(res.status).toHaveBeenCalledWith(expectedStatus);
+      expect(res.json).toHaveBeenCalled();
     });
   });
 
@@ -42,7 +48,7 @@ describe("Given a userRegister controller", () => {
       );
 
       const req: Partial<Request> = {
-        body: { ...mockUser, username: "" },
+        body: { ...mockUser, username: "", image: imageUrl },
       };
 
       await userRegister(req as Request, res as Response, next as NextFunction);
@@ -60,7 +66,7 @@ describe("Given a userRegister controller", () => {
       );
 
       const req: Partial<Request> = {
-        body: { ...mockUser, password: "" },
+        body: { ...mockUser, password: "", image: imageUrl },
       };
 
       await userRegister(req as Request, res as Response, next as NextFunction);
