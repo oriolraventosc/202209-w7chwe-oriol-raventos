@@ -85,7 +85,7 @@ export const userLogin = async (
       expiresIn: "3d",
     });
 
-    res.status(200).json({ accessToken });
+    res.status(200).json(accessToken);
   } catch (error: unknown) {
     next(error);
   }
