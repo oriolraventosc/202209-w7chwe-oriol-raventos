@@ -19,3 +19,6 @@ jobs:
         env:
           JWT_SECRET_KEY: ${{secrets.JWT_SECRET_KEY}}
           MONGODB_URL: mongodb+srv://oriolraventosc:oriolraventosc@cluster0.ltojm2e.mongodb.net/friendenemies202209
+          SUPABASE_URL: https://qycpaqckeaalxzdpektu.supabase.co
+          SUPABASE_API_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5Y3BhcWNrZWFhbHh6ZHBla3R1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjgyNzcwNjIsImV4cCI6MTk4Mzg1MzA2Mn0.z5ai-ECRNRLoZ7w4HB1YLKmSyzWYTreFADdacPmfx2s
+          SUPABASE_BUCKET_IMAGES: friendenemies-images
