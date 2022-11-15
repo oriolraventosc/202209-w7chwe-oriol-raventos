@@ -6,7 +6,6 @@ import connectToDatabase from "../../database";
 import mongoose from "mongoose";
 import app from "../app";
 import type { NextFunction, Response, Request } from "express";
-import { User } from "../../database/models/user";
 
 let server: MongoMemoryServer;
 
@@ -21,9 +20,6 @@ const res: Partial<Response> = {
 
 const next = jest.fn();
 
-beforeEach(async () => {
-  await User.deleteMany();
-});
 afterAll(async () => {
   await mongoose.disconnect();
   await server.stop();
@@ -41,6 +37,7 @@ describe("Given a POST /users/login endpoint", () => {
       const req: Partial<Request> = {
         body: userPendingToRegister,
       };
+
       await userRegister(req as Request, res as Response, next as NextFunction);
 
       const userdata = {
@@ -103,6 +100,7 @@ describe("Given a GET /users/register endpoint", () => {
         username: "Josefa",
         password: "josefa",
         email: "josefa@gmail.com",
+        image: "josefa.jpg",
       };
       const expectedStatus = 201;
       const expectedText = { message: `User ${userData.username} created!` };
@@ -123,8 +121,8 @@ describe("Given a GET /users/register endpoint", () => {
         password: "josefa",
         email: "josefa@gmail.com",
       };
-      const expectedText = { error: "Missing credentials!" };
-      const expectedStatus = 401;
+      const expectedText = { error: "Opps...General Error" };
+      const expectedStatus = 500;
 
       const response = await request(app)
         .post("/users/register")
@@ -142,8 +140,8 @@ describe("Given a GET /users/register endpoint", () => {
         password: "",
         email: "josefa@gmail.com",
       };
-      const expectedText = { error: "Missing credentials!" };
-      const expectedStatus = 401;
+      const expectedText = { error: "Opps...General Error" };
+      const expectedStatus = 500;
 
       const response = await request(app)
         .post("/users/register")
@@ -161,8 +159,8 @@ describe("Given a GET /users/register endpoint", () => {
         password: "josefa",
         email: "",
       };
-      const expectedText = { error: "Missing credentials!" };
-      const expectedStatus = 401;
+      const expectedText = { error: "Opps...General Error" };
+      const expectedStatus = 500;
 
       const response = await request(app)
         .post("/users/register")
