@@ -6,6 +6,7 @@ import connectToDatabase from "../../database";
 import mongoose from "mongoose";
 import app from "../app";
 import type { NextFunction, Response, Request } from "express";
+import { User } from "../../database/models/user";
 
 let server: MongoMemoryServer;
 
@@ -19,6 +20,9 @@ const res: Partial<Response> = {
 };
 
 const next = jest.fn();
+beforeEach(async () => {
+  await User.deleteMany({});
+});
 
 afterAll(async () => {
   await mongoose.disconnect();
