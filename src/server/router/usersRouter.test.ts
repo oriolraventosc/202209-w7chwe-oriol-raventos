@@ -14,12 +14,6 @@ beforeAll(async () => {
   server = await MongoMemoryServer.create();
   await connectToDatabase(enviroment.mongodbUrl);
 });
-
-afterAll(async () => {
-  await mongoose.disconnect();
-  await server.stop();
-});
-
 const res: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
   json: jest.fn(),
@@ -30,6 +24,11 @@ const next = jest.fn();
 beforeEach(async () => {
   await User.deleteMany();
 });
+afterAll(async () => {
+  await mongoose.disconnect();
+  await server.stop();
+});
+
 describe("Given a POST /users/login endpoint", () => {
   describe("When it receives a request with username 'Mars' and password 'mars'", () => {
     test("Then it should respond with a 200 status and return the token", async () => {
