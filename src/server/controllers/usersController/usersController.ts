@@ -15,7 +15,7 @@ export const userRegister = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { username, password, email, image } = req.body as RegisterData;
+  const { username, password, email } = req.body as RegisterData;
 
   try {
     if (!username || !password || !email) {
@@ -34,11 +34,10 @@ export const userRegister = async (
       username,
       password: hashedPassword,
       email,
-      image,
     });
 
     res.status(201).json({
-      userToRegister,
+      message: `User ${userToRegister.username} created!`,
     });
 
     debug(chalk.greenBright(`User ${username} registered!`));
@@ -85,7 +84,7 @@ export const userLogin = async (
       expiresIn: "3d",
     });
 
-    res.status(200).json(accessToken);
+    res.status(200).json({ accessToken });
   } catch (error: unknown) {
     next(error);
   }
