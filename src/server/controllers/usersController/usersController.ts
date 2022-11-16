@@ -38,7 +38,10 @@ export const userRegister = async (
     if (req.file) {
       const timeStamp = Date.now();
 
-      const newFilePath = req.file.originalname.split(".").join(`${timeStamp}`;
+      const newFilePath = `${path.basename(
+        req.file.originalname,
+        path.extname(req.file.originalname)
+      )}-${timeStamp}${path.extname(req.file.originalname)}`;
 
       await fs.rename(
         path.join("assets", "images", req.file.filename),
